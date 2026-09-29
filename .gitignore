@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+outputs/
+*.pth
+node_modules/
+web/dist/
