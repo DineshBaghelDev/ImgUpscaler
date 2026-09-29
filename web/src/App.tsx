@@ -12,11 +12,19 @@ function Compare({ before, after }: { before: string; after?: string }) {
   const [pos, setPos] = useState(50)
   return (
     <div className="space-y-2">
-      <div className="relative w-full overflow-hidden rounded border">
-        <img src={before} className="block w-full" style={{ imageRendering: "pixelated" }} />
+      <div
+        className="relative w-full overflow-hidden rounded border cursor-ew-resize select-none touch-none"
+        onPointerDown={(e) => e.currentTarget.setPointerCapture(e.pointerId)}
+        onPointerMove={(e) => {
+          if (!e.buttons) return
+          const r = e.currentTarget.getBoundingClientRect()
+          setPos(Math.min(100, Math.max(0, ((e.clientX - r.left) / r.width) * 100)))
+        }}
+      >
+        <img src={before} draggable={false} className="block w-full" style={{ imageRendering: "pixelated" }} />
         {after && (
           <>
-            <img src={after} className="absolute inset-0 w-full h-full" style={{ clipPath: `inset(0 0 0 ${pos}%)` }} />
+            <img src={after} draggable={false} className="absolute inset-0 w-full h-full" style={{ clipPath: `inset(0 0 0 ${pos}%)` }} />
             <div className="absolute inset-y-0 w-0.5 bg-white shadow" style={{ left: `${pos}%` }} />
           </>
         )}
@@ -67,7 +75,7 @@ export default function App() {
             setItems([...(e.target.files ?? [])].map((file) => ({ file, src: URL.createObjectURL(file), status: "idle" })))
           }
         />
-        <Select value={size} onValueChange={(v) => v && setSize(v)}>
+        <Select value={size} onValueChange={(v) => v && setSize(v)} items={{ "2k": "2K", "4k": "4K", "8k": "8K" }}>
           <SelectTrigger className="w-24">
             <SelectValue />
           </SelectTrigger>

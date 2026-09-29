@@ -20,7 +20,7 @@ dtype = next(model.parameters()).dtype
 
 @torch.inference_mode()
 def _x4(img: Image.Image) -> Image.Image:
-    x = torch.from_numpy(np.asarray(img.convert("RGB"))).permute(2, 0, 1)[None].to(device, dtype) / 255
+    x = torch.from_numpy(np.array(img.convert("RGB"))).permute(2, 0, 1)[None].to(device, dtype) / 255
     _, _, h, w = x.shape
     out = torch.zeros((1, 3, h * 4, w * 4), dtype=dtype, device=device)
     for y in range(0, h, TILE):
